@@ -1,0 +1,28 @@
+name: Feature request
+description: Propose a focused improvement with a concrete creator-research job.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+    validations:
+      required: true
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current workaround
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Smallest useful change
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: How should we verify it?
+      description: Suggest a reproducible test or acceptance check.
+    validations:
+      required: true
