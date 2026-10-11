@@ -4,6 +4,8 @@
 
 **Creator araştırması için iki küçük ve şeffaf skor aracı — virallik tahmini yaptığını iddia etmeden.**
 
+**CSV/skor aracı hiç kullanmadın mı?** [Sıfırdan Kullanım Rehberi](BEGINNER-GUIDE_TR.md) CSV mantığını, her sütunu, synthetic ilk testi, beklenen sonucu ve skorun nasıl yorumlanacağını adım adım anlatır.
+
 Creator Signal Lab iki soruya cevap üretmek için tasarlandı:
 
 1. **Hangi içerik fırsatına önce bakmalıyım?**

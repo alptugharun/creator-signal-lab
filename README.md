@@ -8,6 +8,8 @@
 
 <p align="center">
   <strong>Two small, transparent scoring tools for creator research — without pretending to predict virality.</strong>
+
+**Never worked with CSV/scoring tools before?** Start with the [Beginner Guide](BEGINNER-GUIDE.md): CSV basics, every input column, synthetic first run, expected output, validation and how to read a heuristic without turning it into a prediction.
 </p>
 
 <p align="center">
