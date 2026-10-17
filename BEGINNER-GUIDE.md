@@ -202,7 +202,25 @@ The parsers intentionally fail instead of silently converting bad data into zero
 
 ---
 
-# 8. What this project does NOT do
+# 8. Spreadsheet-safe output
+
+The ranked output is CSV, so labels and identifiers are prepared defensively before you open them in a spreadsheet.
+
+If a user-controlled `name`, `platform` or `post_id` starts with `=`, `+`, `-` or `@` after leading whitespace, the output adds a leading single quote. For example, `=1+1` becomes `'=1+1` in the ranked CSV.
+
+This happens **only in output**. Your input file is never rewritten and the score is unchanged.
+
+Why: spreadsheet programs may interpret formula-like text as a formula instead of a literal label. The guard reduces that risk for these three exported fields.
+
+What PASS means: the repository test confirms the covered prefixes are neutralized and ordinary values such as `instagram` and `001` remain unchanged.
+
+What PASS does not mean: every spreadsheet app, import option or downstream CSV transformation is guaranteed safe. If another system modifies cells after export, review that system separately.
+
+See `docs/INPUTS.md` for the exact contract.
+
+---
+
+# 9. What this project does NOT do
 
 It is not:
 
@@ -218,7 +236,7 @@ If you need current external trend evidence, collect that evidence separately an
 
 ---
 
-# 9. Recommended workflow
+# 10. Recommended workflow
 
 ### Opportunity analysis
 
@@ -246,7 +264,7 @@ Do not copy a winning post merely because it scored highly.
 
 ---
 
-# 10. Test the code
+# 11. Test the code
 
 ```bash
 python -m unittest discover -s tests -v
@@ -256,7 +274,7 @@ CI runs on Linux and Windows.
 
 ---
 
-# 11. Security/privacy
+# 12. Security/privacy
 
 The project reads local CSV input and writes results to stdout.
 

@@ -194,7 +194,25 @@ Parser bozuk veriyi sessizce 0'a çevirmek yerine hata verir.
 
 ---
 
-# 8. Bu proje ne değildir?
+# 8. Spreadsheet-safe çıktı
+
+Sıralanmış sonuç CSV olduğu için label ve identifier alanları spreadsheet'te açılmadan önce korumalı biçimde yazılır.
+
+Kullanıcı kaynaklı `name`, `platform` veya `post_id` değeri baştaki boşluklardan sonra `=`, `+`, `-` ya da `@` ile başlıyorsa çıktıya tek tırnak eklenir. Örneğin `=1+1`, sıralanmış CSV'de `'=1+1` olur.
+
+Bu işlem **yalnızca çıktıda** yapılır. Girdi dosyan değiştirilmez ve skor değişmez.
+
+Neden: spreadsheet programları formula-benzeri metni düz label yerine formül olarak yorumlayabilir. Bu koruma üç export alanında bu riski azaltır.
+
+PASS ne demek: repo testi kapsanan prefix'lerin nötralize edildiğini ve `instagram`, `001` gibi normal değerlerin değişmeden kaldığını doğrular.
+
+PASS ne demek değildir: her spreadsheet uygulamasının, import seçeneğinin veya sonraki CSV dönüşümünün evrensel olarak güvenli olduğu anlamına gelmez. Başka bir sistem hücreleri sonradan değiştiriyorsa onu ayrıca kontrol et.
+
+Kesin sözleşme: `docs/INPUTS.md`.
+
+---
+
+# 9. Bu proje ne değildir?
 
 - sosyal algoritma reverse-engineer değil;
 - scraper değil;
@@ -208,7 +226,7 @@ Güncel dış trend gerekiyorsa o kanıt ayrıca toplanmalı ve tarih/kaynak eti
 
 ---
 
-# 9. İyi workflow
+# 10. İyi workflow
 
 ### Fırsat analizi
 
@@ -236,7 +254,7 @@ Kazanan postu birebir kopyalama.
 
 ---
 
-# 10. Test
+# 11. Test
 
 ```bash
 python -m unittest discover -s tests -v
@@ -246,7 +264,7 @@ CI Linux ve Windows üzerinde çalışır.
 
 ---
 
-# 11. Güvenlik / gizlilik
+# 12. Güvenlik / gizlilik
 
 Proje yerel CSV okur ve stdout'a sonuç yazar.
 
