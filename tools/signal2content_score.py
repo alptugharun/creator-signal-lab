@@ -39,6 +39,16 @@ FIELDS = (
 INPUT_COLUMNS = ("name", *FIELDS)
 INPUT_EXAMPLE = "examples/signal2content-opportunities.csv"
 INPUT_CONTRACT = "docs/INPUTS.md#content-opportunities"
+SPREADSHEET_FORMULA_PREFIXES = ("=", "+", "-", "@")
+
+
+def spreadsheet_safe_text(value: str) -> str:
+    """Keep formula-like user text literal in ranked CSV output."""
+    if value.lstrip().startswith(SPREADSHEET_FORMULA_PREFIXES):
+        return "'" + value
+    return value
+
+
 
 def bounded_number(value: str, field: str) -> float:
     try:
@@ -126,7 +136,7 @@ def main() -> int:
     writer = csv.writer(sys.stdout)
     writer.writerow(["rank", "name", "score"])
     for rank, (row, score) in enumerate(scored, start=1):
-        writer.writerow([rank, row["name"], f"{score:.2f}"])
+        writer.writerow([rank, spreadsheet_safe_text(row["name"]), f"{score:.2f}"])
 
     return 0
 

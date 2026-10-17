@@ -100,6 +100,48 @@ class ToolTests(unittest.TestCase):
             rows = OUTLIER.load_rows(path)
             self.assertEqual("001", rows[0]["post_id"])
 
+    def test_formula_like_text_is_neutralized_in_ranked_output(self):
+        dangerous = ("=1+1", "+1+1", "-1+1", "@SUM(1,1)", "\t=1+1", "  =1+1")
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            for value in dangerous:
+                with self.subTest(tool="signal2content_score", value=value):
+                    path = base / "signal.csv"
+                    with path.open("w", encoding="utf-8", newline="") as handle:
+                        writer = csv.writer(handle)
+                        writer.writerow(SIGNAL.INPUT_COLUMNS)
+                        writer.writerow([value, 80, 80, 80, 80, 80, 20])
+                    result = self.run_tool("signal2content_score", path)
+                    self.assertEqual(0, result.returncode, result.stderr)
+                    row = next(csv.DictReader(io.StringIO(result.stdout)))
+                    self.assertEqual("'" + value, row["name"])
+
+                with self.subTest(tool="outlier_score", value=value):
+                    path = base / "outlier.csv"
+                    with path.open("w", encoding="utf-8", newline="") as handle:
+                        writer = csv.writer(handle)
+                        writer.writerow(OUTLIER.INPUT_COLUMNS)
+                        writer.writerow([value, value, 100, 10, 2, 3, 4])
+                    result = self.run_tool("outlier_score", path)
+                    self.assertEqual(0, result.returncode, result.stderr)
+                    row = next(csv.DictReader(io.StringIO(result.stdout)))
+                    self.assertEqual("'" + value, row["platform"])
+                    self.assertEqual("'" + value, row["post_id"])
+
+    def test_regular_identifiers_remain_unchanged_in_ranked_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "posts.csv"
+            path.write_text(
+                "platform,post_id,views,likes,comments,shares,saves\n"
+                "instagram,001,100,10,2,3,4\n",
+                encoding="utf-8",
+            )
+            result = self.run_tool("outlier_score", path)
+            self.assertEqual(0, result.returncode, result.stderr)
+            row = next(csv.DictReader(io.StringIO(result.stdout)))
+            self.assertEqual("instagram", row["platform"])
+            self.assertEqual("001", row["post_id"])
+
     def test_signal_score_is_bounded(self):
         row = {
             "name": "x",

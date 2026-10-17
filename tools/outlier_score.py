@@ -25,6 +25,16 @@ INPUT_COLUMNS = ("platform", "post_id", *METRICS)
 INPUT_EXAMPLE = "examples/social-outlier-posts.csv"
 INPUT_CONTRACT = "docs/INPUTS.md#social-posts"
 
+SPREADSHEET_FORMULA_PREFIXES = ("=", "+", "-", "@")
+
+
+def spreadsheet_safe_text(value: str) -> str:
+    """Keep formula-like user text literal in ranked CSV output."""
+    if value.lstrip().startswith(SPREADSHEET_FORMULA_PREFIXES):
+        return "'" + value
+    return value
+
+
 
 def number(value: str) -> float:
     try:
@@ -125,7 +135,10 @@ def main() -> int:
     )
     writer.writeheader()
     for rank, row in enumerate(ranked, 1):
-        writer.writerow({"rank": rank, **{k: row.get(k, "") for k in writer.fieldnames if k != "rank"}})
+        output_row = {"rank": rank, **{k: row.get(k, "") for k in writer.fieldnames if k != "rank"}}
+        for field in ("platform", "post_id"):
+            output_row[field] = spreadsheet_safe_text(str(output_row[field]))
+        writer.writerow(output_row)
 
     return 0
 

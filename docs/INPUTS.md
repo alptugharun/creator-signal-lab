@@ -15,6 +15,20 @@ Both tools are dependency-free and read local CSV files only.
 - IDs remain text, so `001` stays `001`;
 - input files are never modified.
 
+## Spreadsheet-safe ranked output
+
+The tools print ranked CSV to stdout. User-controlled text fields are treated as untrusted spreadsheet cells: if `name`, `platform` or `post_id` begins with `=`, `+`, `-` or `@` after leading whitespace, the ranked **output only** is prefixed with a single quote. Example: input `=1+1` is emitted as `'=1+1`.
+
+This reduces formula interpretation risk when the ranked CSV is opened in common spreadsheet software. It does not rewrite the source CSV, change the score, or claim that every spreadsheet/import pipeline is universally safe. Downstream tools that rewrite cells need their own import/security controls.
+
+Verify the guard with:
+
+```bash
+python -m unittest tests.test_tools.ToolTests.test_formula_like_text_is_neutralized_in_ranked_output -v
+```
+
+PASS proves the covered text fields receive the guard for the tested formula-like prefixes, including leading whitespace. It does not prove anything about unrelated spreadsheet features or downstream transformations.
+
 ## Content opportunities
 
 Required header:
